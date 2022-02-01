@@ -1,22 +1,30 @@
 # Errors
 
 <aside class="notice">
-This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
+  Specific api error codes are labeled with the <code>error_code</code> key.
 </aside>
 
-The Kittn API uses the following error codes:
+FmsAPI V2 uses the following error codes:
 
 
-Error Code | Meaning
----------- | -------
-400 | Bad Request -- Your request is invalid.
-401 | Unauthorized -- Your API key is wrong.
-403 | Forbidden -- The kitten requested is hidden for administrators only.
-404 | Not Found -- The specified kitten could not be found.
-405 | Method Not Allowed -- You tried to access a kitten with an invalid method.
-406 | Not Acceptable -- You requested a format that isn't json.
-410 | Gone -- The kitten requested has been removed from our servers.
-418 | I'm a teapot.
-429 | Too Many Requests -- You're requesting too many kittens! Slow down!
-500 | Internal Server Error -- We had a problem with our server. Try again later.
-503 | Service Unavailable -- We're temporarily offline for maintenance. Please try again later.
+HTTP Error Code | API Error Code | Meaning
+---------- | -------- | -------- |
+**400** | **3** | **Bad Request** The requested action could not be performed.
+**400** | **4** | **Bad Request** At least one parameter was missing or did not match validation criteria
+**400** | **5** | **Bad Request** The supplied parameters conflict with one another.
+**400** | **6** | **Bad Request** Reservations cannot be unreserved. Please close this lead and create a new one or contact the facility.
+**400** | **7** | **Bad Request** The requested action has been disabled for tenants.  Please visit the facility for more information.
+**400** | **8** | **Bad Request** The login and/or password provided was incorrect.
+**400** | **10** | **Bad Request** Either the sort parameter you specified is not supported, or this resource does not support sorting.
+**400** | **11** | **Bad Request** The tenant account you are trying to register already has an account setup.
+**400** | **12** | **Bad Request** The refund requested has already been voided.
+**401** | **2** | **Unauthorized** Invalid OAuth Request.
+**403** | **13** | **Forbidden** The client does not have access rights to the requested content.
+**404** | **9** | **Not Found** The resource you requested could not be found.
+**405** | | **Method Not Allowed**
+**406** | | **Not Acceptable**
+**410** | | **Gone**
+**418** | | **I'm a teapot**
+**429** | | **Too Many Requests**
+**500** | **1** | **Internal Server Error** Unknown API error. Sorry.
+**503** | | **Service Unavailable**

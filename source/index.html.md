@@ -1,15 +1,16 @@
 ---
-title: API Reference
+title: storEDGE REST API v2
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+- csharp
+- ruby
+- python
+- javascript
+- shell
 
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
+toc_footers: []
+
+highlight_theme: github.slate
 
 includes:
   - errors
@@ -19,26 +20,33 @@ search: true
 code_clipboard: true
 
 meta:
-  - name: description
-    content: Documentation for the Kittn API
+  - name: storEDGE REST API v2
+    content: Documentation for the storEDGE REST API V2
 ---
 
-# Introduction
+<h1 id="storEDGEAPIV2">storEDGE REST API v2</h1>
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+It does stuff.
+The storEDGE API is a REST API.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+Base URLs:
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+All communication is done over HTTPS, there is no non-secure access. All storEDGE URL’s adhere to the following format:
+
+- `https:///:version_identifier/:facility_id/:resource((/:resource_id)((/:subresource)(/:subresource_id)))`
+
+A URL in practice would be something like:
+
+- `https://api.storedgefms.com/v1/843eee43­55b7­4b25­85c4­c555ba7f43fa/ledgers/2c7b16bb­-a760­-4938­-b942­44f719e-05529`
+
 
 # Authentication
-
-> To authorize, use this code:
+> **To authorize, use this code:**
 
 ```ruby
-require 'kittn'
+require 'storedge_client'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+api = StorEdgeClient.new({key: 'MyCoolAuthKey', secret: 'MyCoolAuthSecret'})
 ```
 
 ```python
@@ -59,187 +67,99 @@ const kittn = require('kittn');
 let api = kittn.authorize('meowmeowmeow');
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+```csharp
+StoreEdgeClientCredential storEdgeCredentials = new storEdgeCredential("MyCoolAuthKey", "MyCoolAuthSecret");
+StorEdgeClient client = new StorEdgeClient(fmsCredentials);
+```
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+> Make sure to replace credentials using your key and secret.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+The storEDGE REST API V2 uses OAuth 1.0 as its authentication mechanism. Whereas in many OAuth implementations you would have three steps (application<->service, service<->user, service<->application), storEDGE uses only one leg (application<->service), hence the term "one-legged". For a description of the various OAuth 1.0 flows, please see [https://github.com/Mashape/mashape-oauth/blob/master/FLOWS.md](https://github.com/Mashape/mashape-oauth/blob/master/FLOWS.md)
 
-`Authorization: meowmeowmeow`
+You will need three pieces of information to communicate with the API:
+
+API access ID This ID is attached to a particular company and is created by your users and provided to you by them. Put this in your OAuth config as the consumer key.
+API secret key Also provided by your users. Put this in your OAuth config as the consumer secret.
+Facility ID Your users will provide this to you as well. Put this directly into the URL.
+
+### Formats and Headers
+
+The storEDGE API sends and receives data in JSON format. For more info on JSON, check out [http://json.org](http://json.org).
+
+It is highly recommended that the standard Content­-Type and Accept headers be included on every storEDGE API call. Since the format is JSON, the values of these headers should be application/json. Some calls may not succeed without these headers.
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>MyCoolAuthKey</code> and <code>MyCoolAuthSecret</code>with your personal API key and secret, respectably.
 </aside>
 
-# Kittens
 
-## Get All Kittens
+# Channels
+
+## Get All Channels
+
+<!-- ## get__v1_companies_137202df-0f06-4e5a-bc6c-722a05bbcd0e_channels -->
+
+> **Get Channels Code Example**
+
+```csharp
+StoreEdgeClientCredential storEdgeCredentials = new StoreEdgeClientCredential("MyCoolAuthKey", "MyCoolAuthSecret");
+StorEdgeClient client = new StorEdgeClient(storEdgeCredentials);
+client.channels;
+```
 
 ```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
+StorEdgeClient.new({key: 'MyCoolAuthKey', secret: 'MyCoolAuthSecret'}).channels
 ```
 
-```python
-import kittn
+`GET /v1/companies/:company_id/channels`
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+<h3 id="get__v1_companies_137202df-0f06-4e5a-bc6c-722a05bbcd0e_channels-parameters">Parameters</h3>
 
-```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
-```
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|**company_id**|query|string|true|The company id|
+|**fields**|query|object|false|Name the fields you wish returned by the response|
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
+> **Request** /v1/companies/:company_id/channels
 
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "id": "535204dh-0k06-6u3h-yc9r-722a05xitd9y"
   }
 ]
 ```
 
-This endpoint retrieves all kittens.
+> **Request** /v1/companies/:company_id/channels?fields[channel]=id,name,company_id,channel_rate_ids
 
-### HTTP Request
+```json
+[
+  {
+    "id": "535204dh-0k06-6u3h-yc9r-722a05xitd9y",
+    "name": "Web",
+    "company_id": "137202df-0f06-4e5a-bc6c-722a05bbcd0e",
+    "channel_rate_ids": [
+      "137202df-0f06-4e5a-bc6c-722a05bbcd0e"
+    ]
+  }
+]
+```
 
-`GET http://example.com/api/kittens`
+<h3 id="get__v1_companies_137202df-0f06-4e5a-bc6c-722a05bbcd0e_channels-responses">Responses</h3>
 
-### Query Parameters
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|403|[Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3)|Forbidden|None|
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+<h3 id="get__v1_companies_137202df-0f06-4e5a-bc6c-722a05bbcd0e_channels-responseschema">Response Schema</h3>
+
+|Field|Type|Meaning|
+|---|---|---|
+| **id** | uuid | The channel id |
+| **name** | string | The name assigned for the channel |
+| **company_id** | uuid | The id of the company associated to the channel |
+|**channel_rate_ids** | array(uuid) | A list of the channel rate ids associated to the channel |
 
 <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+This is a green success section looks like
 </aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
